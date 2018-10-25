@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+<script>
+const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+const suggestions = document.querySelector('ul');
+const cities = [];
+const input = document.querySelector('input');
+var list = document.getElementsByTagName('li');
+fetch(endpoint)
+    .then(blob=>blob.json())
+    .then(data=>cities.push(...data));
+
+
+input.oninput = function() {
+  clear();
+  highlight();
+ //  var newArr = cities.map(function findCity (element,index,array){
+ //  var name = element.city.toLowerCase().split(' '),
+ //      value = input.value.toLowerCase().split(' ');
+ //  for (var i=0; i<name.length; i++){
+ //  let founded = false
+ //  for(var j=0; j<value.length; j++){
+ //  if(name[i].indexOf(value[j]) != -1){
+ //  var list = document.createElement('li');
+ //  list.innerHTML = element.city;
+ //  suggestions.appendChild(list);
+ //  founded = true
+ //  break;
+ //       }
+ //     }
+ //     if(founded)
+ //       break
+ //    }
+ // })
+
+}
+
+
+ function clear () {
+  while(suggestions.lastChild != undefined){
+  suggestions.removeChild(suggestions.lastChild);
+ }
+}
+
+  function highlight () {
+  var words = [];
+  var inputArray = input.value.toLowerCase().split(' ');
+  for(var q=0; q<inputArray.length; q++){
+  if(inputArray[q] != ''){
+    words.push(inputArray[q]);
+  }
+  }
+  var citiesResult = [];
+   for(var j=0; j<cities.length; j++){
+     var counts = 0;
+     var name = cities[j].city.toLowerCase().split(' ');
+     for(var p=0; p<words.length; p++){
+       for(var i = 0; i<name.length; i++){
+         if(name[i].indexOf(words[p]) != -1 ) {
+           counts++;
+           break
+         }
+       }
+     }
+     if(counts == words.length) {
+       if(citiesResult.indexOf(cities[j].city) == -1)
+         // citiesResult.push(cities[j].city)
+         var list = document.createElement('li');
+         list.innerHTML = cities[j].city;
+         suggestions.appendChild(list);
+     }
+
+   }
+   console.log(suggestions)
+}
+
+
+</script>
+  </body>
+</html>
